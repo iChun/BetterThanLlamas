@@ -47,7 +47,6 @@ public class BetterThanLlamas
             {
                 MinecraftForge.EVENT_BUS.addListener(this::onInitGuiPost);
             }
-
         });
         DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.log(Level.ERROR, "You are loading " + MOD_NAME + " on a server. " + MOD_NAME + " is a client only mod!"));
     }
@@ -98,16 +97,16 @@ public class BetterThanLlamas
 
     public class Config
     {
-        public ForgeConfigSpec.IntValue applyOn;
+        public final ForgeConfigSpec.IntValue applyOn;
 
-        public ForgeConfigSpec.IntValue fancyChance;
+        public final ForgeConfigSpec.IntValue fancyChance;
 
-        public ForgeConfigSpec.IntValue hatChance;
-        public ForgeConfigSpec.IntValue monocleChance;
-        public ForgeConfigSpec.IntValue pipeChance;
-        public ForgeConfigSpec.IntValue bowtieChance;
-        public ForgeConfigSpec.IntValue fezChance;
-        public ForgeConfigSpec.IntValue moustacheChance;
+        public final ForgeConfigSpec.IntValue hatChance;
+        public final ForgeConfigSpec.IntValue monocleChance;
+        public final ForgeConfigSpec.IntValue pipeChance;
+        public final ForgeConfigSpec.IntValue bowtieChance;
+        public final ForgeConfigSpec.IntValue fezChance;
+        public final ForgeConfigSpec.IntValue moustacheChance;
 
         public Config(ForgeConfigSpec.Builder builder)
         {
