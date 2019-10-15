@@ -13,13 +13,13 @@ issueTrackerURL="https://github.com/iChun/BetterThanLlamas/issues"
     https://twitter.com/Wyld/status/846489501320982528
     '''
 
-[[dependencies.betterthanbunnies]]
+[[dependencies.betterthanllamas]]
     modId="forge"
     mandatory=true
     versionRange="[28,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.betterthanbunnies]]
+[[dependencies.betterthanllamas]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.14.4]"
