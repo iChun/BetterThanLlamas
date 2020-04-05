@@ -5,7 +5,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LlamaRenderer;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.entity.layers.LlamaDecorLayer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.passive.horse.TraderLlamaEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -68,20 +71,30 @@ public class BetterThanLlamas
         int i = config.applyOn.get();
         if((i & 1) > 0)
         {
-            EntityRenderer render = Minecraft.getInstance().getRenderManager().getRenderer(LlamaEntity.class);
+            EntityRenderer render = Minecraft.getInstance().getRenderManager().renderers.get(EntityType.LLAMA);
             if(render instanceof LlamaRenderer)
             {
                 LlamaRenderer llamaRenderer = (LlamaRenderer)render;
-                llamaRenderer.addLayer(new LlamaFancyLayer(llamaRenderer));
+                LlamaFancyLayer fancyLayer = new LlamaFancyLayer(llamaRenderer);
+                llamaRenderer.addLayer(fancyLayer);
+                if(fancyLayer.isEasterEggDay)
+                {
+                    llamaRenderer.layerRenderers.stream().filter(l -> l instanceof LlamaDecorLayer).forEach(layer -> LlamaFancyLayer.processLlamaModelForEE(((LlamaDecorLayer)layer).model));
+                }
             }
         }
         if((i & 2) > 0)
         {
-            EntityRenderer render = Minecraft.getInstance().getRenderManager().getRenderer(TraderLlamaEntity.class);
+            EntityRenderer render = Minecraft.getInstance().getRenderManager().renderers.get(EntityType.TRADER_LLAMA);
             if(render instanceof LlamaRenderer)
             {
                 LlamaRenderer llamaRenderer = (LlamaRenderer)render;
-                llamaRenderer.addLayer(new LlamaFancyLayer(llamaRenderer));
+                LlamaFancyLayer fancyLayer = new LlamaFancyLayer(llamaRenderer);
+                llamaRenderer.addLayer(fancyLayer);
+                if(fancyLayer.isEasterEggDay)
+                {
+                    llamaRenderer.layerRenderers.stream().filter(l -> l instanceof LlamaDecorLayer).forEach(layer -> LlamaFancyLayer.processLlamaModelForEE(((LlamaDecorLayer)layer).model));
+                }
             }
         }
     }
