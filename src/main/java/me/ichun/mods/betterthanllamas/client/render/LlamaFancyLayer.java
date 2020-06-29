@@ -6,7 +6,6 @@ import me.ichun.mods.betterthanllamas.client.model.LlamaFancyModel;
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.LlamaRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -20,6 +19,7 @@ import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.Calendar;
 import java.util.Random;

@@ -17,11 +17,14 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,6 +55,9 @@ public class BetterThanLlamas
             }
         });
         DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.log(Level.ERROR, "You are loading " + MOD_NAME + " on a server. " + MOD_NAME + " is a client only mod!"));
+
+        //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
     }
 
     private void setupConfig()
@@ -140,22 +146,22 @@ public class BetterThanLlamas
 
             hatChance = builder.comment("Chance of llamas wearing hats in their outfit, in percentage% (0-100)")
                     .translation("config.betterthanllamas.prop.hatChance.desc")
-                    .defineInRange("hatChance", 100, 0, 100);
+                    .defineInRange("hatChance", 50, 0, 100);
             monocleChance = builder.comment("Chance of llamas wearing a monocle in their outfit, in percentage% (0-100)")
                     .translation("config.betterthanllamas.prop.monocleChance.desc")
-                    .defineInRange("monocleChance", 100, 0, 100);
+                    .defineInRange("monocleChance", 50, 0, 100);
             pipeChance = builder.comment("Chance of llamas having a pipe in their outfit, in percentage% (0-100)")
                     .translation("config.betterthanllamas.prop.pipeChance.desc")
-                    .defineInRange("pipeChance", 100, 0, 100);
+                    .defineInRange("pipeChance", 50, 0, 100);
             bowtieChance = builder.comment("Chance of llamas wearing a bow tie in their outfit, in percentage% (0-100)")
                     .translation("config.betterthanllamas.prop.bowtieChance.desc")
-                    .defineInRange("bowtieChance", 100, 0, 100);
+                    .defineInRange("bowtieChance", 50, 0, 100);
             fezChance = builder.comment("Chance of llamas wearing a fez in their outfit, in percentage% (0-100)")
                     .translation("config.betterthanllamas.prop.fezChance.desc")
-                    .defineInRange("fezChance", 100, 0, 100);
+                    .defineInRange("fezChance", 50, 0, 100);
             moustacheChance = builder.comment("Chance of llamas wearing a moustache in their outfit, in percentage% (0-100)")
                     .translation("config.betterthanllamas.prop.moustacheChance.desc")
-                    .defineInRange("moustacheChance", 100, 0, 100);
+                    .defineInRange("moustacheChance", 50, 0, 100);
 
             builder.pop();
         }

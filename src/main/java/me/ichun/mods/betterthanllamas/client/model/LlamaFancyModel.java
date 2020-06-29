@@ -2,13 +2,13 @@ package me.ichun.mods.betterthanllamas.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class LlamaFancyModel<T extends LlamaEntity> extends EntityModel<T>
 {
