@@ -86,7 +86,7 @@ public class LlamaFancyLayer extends LayerRenderer<LlamaEntity, LlamaModel<Llama
             }
             else
             {
-                rand.setSeed(Math.abs((llama.hasCustomName() ? llama.getName().getUnformattedComponentText().hashCode() : llama.getEntityId()) * 5642L));
+                rand.setSeed(Math.abs((llama.hasCustomName() ? llama.getName().getUnformattedComponentText().hashCode() : llama.getUniqueID().hashCode()) * 5642L));
             }
 
             boolean renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache;
