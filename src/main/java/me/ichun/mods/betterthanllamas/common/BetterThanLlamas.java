@@ -2,29 +2,27 @@ package me.ichun.mods.betterthanllamas.common;
 
 import me.ichun.mods.betterthanllamas.client.render.LlamaFancyLayer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.model.LlamaModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LlamaRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LlamaDecorLayer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.horse.LlamaEntity;
-import net.minecraft.entity.passive.horse.TraderLlamaEntity;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.FMLNetworkConstants;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,21 +41,21 @@ public class BetterThanLlamas
 
     public BetterThanLlamas()
     {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             setupConfig();
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::finishLoading);
+            MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
-                    if(calendar.get(Calendar.MONTH) == Calendar.DECEMBER && calendar.get(Calendar.DAY_OF_MONTH) == 9) // National Llama day....?
+            if(calendar.get(Calendar.MONTH) == Calendar.DECEMBER && calendar.get(Calendar.DAY_OF_MONTH) == 9) // National Llama day....?
             {
                 MinecraftForge.EVENT_BUS.addListener(this::onInitGuiPost);
             }
         });
-        DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.log(Level.ERROR, "You are loading " + MOD_NAME + " on a server. " + MOD_NAME + " is a client only mod!"));
+        DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.log(Level.ERROR, "You are loading " + MOD_NAME + " on a server. " + MOD_NAME + " is a client only mod!"));
 
         //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
     }
 
     private void setupConfig()
@@ -71,35 +69,74 @@ public class BetterThanLlamas
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, configBuilder.build(), MOD_ID + ".toml");
     }
 
+    private boolean hasLoadingGui = false;
     @OnlyIn(Dist.CLIENT)
-    private void finishLoading(FMLLoadCompleteEvent event)
+    private void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.END)
+        {
+            if(Minecraft.getInstance().getOverlay() == null && hasLoadingGui)
+            {
+                injectLayer();
+            }
+            hasLoadingGui = Minecraft.getInstance().getOverlay() != null;
+        }
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    private void injectLayer()
     {
         int i = config.applyOn.get();
         if((i & 1) > 0)
         {
-            EntityRenderer render = Minecraft.getInstance().getRenderManager().renderers.get(EntityType.LLAMA);
-            if(render instanceof LlamaRenderer)
+            EntityRenderer render = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(EntityType.LLAMA);
+            if(render instanceof LlamaRenderer llamaRenderer)
             {
-                LlamaRenderer llamaRenderer = (LlamaRenderer)render;
-                LlamaFancyLayer fancyLayer = new LlamaFancyLayer(llamaRenderer);
-                llamaRenderer.addLayer(fancyLayer);
-                if(fancyLayer.isEasterEggDay)
+                boolean flag = false;
+                for(RenderLayer<Llama, LlamaModel<Llama>> layer : llamaRenderer.layers)
                 {
-                    llamaRenderer.layerRenderers.stream().filter(l -> l instanceof LlamaDecorLayer).forEach(layer -> LlamaFancyLayer.processLlamaModelForEE(((LlamaDecorLayer)layer).model));
+                    if(layer instanceof LlamaFancyLayer)
+                    {
+                        flag = true;
+                        break;
+                    }
+
+                }
+                if(!flag)
+                {
+                    LlamaFancyLayer fancyLayer = new LlamaFancyLayer(llamaRenderer);
+                    llamaRenderer.addLayer(fancyLayer);
+                    if(fancyLayer.isEasterEggDay)
+                    {
+                        llamaRenderer.layers.stream().filter(l -> l instanceof LlamaDecorLayer).forEach(layer -> LlamaFancyLayer.processLlamaModelForEE(((LlamaDecorLayer)layer).model));
+                    }
                 }
             }
         }
         if((i & 2) > 0)
         {
-            EntityRenderer render = Minecraft.getInstance().getRenderManager().renderers.get(EntityType.TRADER_LLAMA);
-            if(render instanceof LlamaRenderer)
+            EntityRenderer render = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(EntityType.TRADER_LLAMA);
+            if(render instanceof LlamaRenderer llamaRenderer)
             {
-                LlamaRenderer llamaRenderer = (LlamaRenderer)render;
-                LlamaFancyLayer fancyLayer = new LlamaFancyLayer(llamaRenderer);
-                llamaRenderer.addLayer(fancyLayer);
-                if(fancyLayer.isEasterEggDay)
+                boolean flag = false;
+                for(RenderLayer<Llama, LlamaModel<Llama>> layer : llamaRenderer.layers)
                 {
-                    llamaRenderer.layerRenderers.stream().filter(l -> l instanceof LlamaDecorLayer).forEach(layer -> LlamaFancyLayer.processLlamaModelForEE(((LlamaDecorLayer)layer).model));
+                    if(layer instanceof LlamaFancyLayer)
+                    {
+                        flag = true;
+                        break;
+                    }
+
+                }
+                if(!flag)
+                {
+                    LlamaFancyLayer fancyLayer = new LlamaFancyLayer(llamaRenderer);
+                    llamaRenderer.addLayer(fancyLayer);
+                    if(fancyLayer.isEasterEggDay)
+                    {
+                        llamaRenderer.layers.stream().filter(l -> l instanceof LlamaDecorLayer).forEach(layer -> LlamaFancyLayer.processLlamaModelForEE(((LlamaDecorLayer)layer).model));
+                    }
                 }
             }
         }
@@ -108,9 +145,9 @@ public class BetterThanLlamas
     @OnlyIn(Dist.CLIENT)
     private void onInitGuiPost(GuiScreenEvent.InitGuiEvent.Post event)
     {
-        if(event.getGui() instanceof MainMenuScreen)
+        if(event.getGui() instanceof TitleScreen)
         {
-            ((MainMenuScreen)event.getGui()).splashText = I18n.format("splash.llamaDay");
+            ((TitleScreen)event.getGui()).splash = I18n.get("splash.llamaDay");
         }
     }
 
