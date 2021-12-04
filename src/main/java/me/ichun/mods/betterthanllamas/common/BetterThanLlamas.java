@@ -1,10 +1,10 @@
 package me.ichun.mods.betterthanllamas.common;
 
 import me.ichun.mods.betterthanllamas.client.render.LlamaFancyLayer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.LlamaModel;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.LlamaRenderer;
 import net.minecraft.client.renderer.entity.layers.LlamaDecorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -13,16 +13,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.NetworkConstants;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +44,7 @@ public class BetterThanLlamas
     {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             setupConfig();
-            MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onAddLayers);
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
@@ -55,7 +56,7 @@ public class BetterThanLlamas
         DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.log(Level.ERROR, "You are loading " + MOD_NAME + " on a server. " + MOD_NAME + " is a client only mod!"));
 
         //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
     }
 
     private void setupConfig()
@@ -69,28 +70,13 @@ public class BetterThanLlamas
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, configBuilder.build(), MOD_ID + ".toml");
     }
 
-    private boolean hasLoadingGui = false;
     @OnlyIn(Dist.CLIENT)
-    private void onClientTick(TickEvent.ClientTickEvent event)
-    {
-        if(event.phase == TickEvent.Phase.END)
-        {
-            if(Minecraft.getInstance().getOverlay() == null && hasLoadingGui)
-            {
-                injectLayer();
-            }
-            hasLoadingGui = Minecraft.getInstance().getOverlay() != null;
-        }
-    }
-
-
-    @OnlyIn(Dist.CLIENT)
-    private void injectLayer()
+    private void onAddLayers(EntityRenderersEvent.AddLayers event)
     {
         int i = config.applyOn.get();
         if((i & 1) > 0)
         {
-            EntityRenderer render = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(EntityType.LLAMA);
+            LivingEntityRenderer<Llama, ? extends EntityModel<Llama>> render = event.getRenderer(EntityType.LLAMA);
             if(render instanceof LlamaRenderer llamaRenderer)
             {
                 boolean flag = false;
@@ -116,7 +102,7 @@ public class BetterThanLlamas
         }
         if((i & 2) > 0)
         {
-            EntityRenderer render = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(EntityType.TRADER_LLAMA);
+            LivingEntityRenderer<Llama, ? extends EntityModel<Llama>> render = event.getRenderer(EntityType.TRADER_LLAMA);
             if(render instanceof LlamaRenderer llamaRenderer)
             {
                 boolean flag = false;
@@ -143,11 +129,11 @@ public class BetterThanLlamas
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void onInitGuiPost(GuiScreenEvent.InitGuiEvent.Post event)
+    private void onInitGuiPost(ScreenEvent.InitScreenEvent.Post event)
     {
-        if(event.getGui() instanceof TitleScreen)
+        if(event.getScreen() instanceof TitleScreen)
         {
-            ((TitleScreen)event.getGui()).splash = I18n.get("splash.llamaDay");
+            ((TitleScreen)event.getScreen()).splash = I18n.get("splash.llamaDay");
         }
     }
 

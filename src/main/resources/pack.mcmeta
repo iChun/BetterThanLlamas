@@ -1,6 +1,6 @@
 {
-   "pack":{
-      "pack_format":6,
-      "description":"Better Than Llamas"
+   "pack": {
+      "description": "Better Than Llamas",
+      "pack_format": 8
    }
 }
