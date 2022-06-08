@@ -66,7 +66,6 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
         {
             modelRabbit = new RabbitModel(RabbitModel.createBodyLayer().bakeRoot());
             modelRabbit.young = false;
-            rabbitInstance = new Rabbit(EntityType.RABBIT, null);
             processLlamaModelForEE(renderer.model);
         }
     }
@@ -84,14 +83,14 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
     {
         if(!llama.isInvisible())
         {
-            boolean iChunLlama = llama.hasCustomName() && "iChun".equals(llama.getName().getContents());
+            boolean iChunLlama = llama.hasCustomName() && "iChun".equals(llama.getName().getString());
             if(iChunLlama)
             {
                 rand.setSeed(Math.abs("iChun".hashCode() + (llama.getId() * 63268L) * 5642L));
             }
             else
             {
-                rand.setSeed(Math.abs((llama.hasCustomName() ? llama.getName().getContents().hashCode() : llama.getUUID().hashCode()) * 5642L));
+                rand.setSeed(Math.abs((llama.hasCustomName() ? llama.getName().getString().hashCode() : llama.getUUID().hashCode()) * 5642L));
             }
 
             boolean renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache;
@@ -167,7 +166,7 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                     matrixStackIn.translate(0, -26F * scale, -10F * scale);
 
                     ResourceLocation bunnyTex;
-                    if(llama.hasCustomName() && "Toast".equals(llama.getName().getContents()))
+                    if(llama.hasCustomName() && "Toast".equals(llama.getName().getString()))
                     {
                         bunnyTex = TOAST;
                     }
@@ -183,6 +182,11 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                                     case 5 -> SALT;
                                     case 6 -> CAERBANNOG;
                                 };
+                    }
+
+                    if(rabbitInstance == null || rabbitInstance.getLevel() != llama.getLevel())
+                    {
+                        rabbitInstance = new Rabbit(EntityType.RABBIT, llama.getLevel());
                     }
 
                     VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(bunnyTex));
