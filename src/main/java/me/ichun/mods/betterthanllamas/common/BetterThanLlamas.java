@@ -129,7 +129,7 @@ public class BetterThanLlamas
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void onInitGuiPost(ScreenEvent.InitScreenEvent.Post event)
+    private void onInitGuiPost(ScreenEvent.Init.Post event)
     {
         if(event.getScreen() instanceof TitleScreen)
         {
