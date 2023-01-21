@@ -66,7 +66,6 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
         {
             modelRabbit = new RabbitModel(RabbitModel.createBodyLayer().bakeRoot());
             modelRabbit.young = false;
-            rabbitInstance = new Rabbit(EntityType.RABBIT, null);
             processLlamaModelForEE(renderer.model);
         }
     }
@@ -183,6 +182,11 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                                     case 5 -> SALT;
                                     case 6 -> CAERBANNOG;
                                 };
+                    }
+
+                    if (rabbitInstance == null || rabbitInstance.getLevel() != llama.getLevel())
+                    {
+                        rabbitInstance = new Rabbit(EntityType.RABBIT, llama.getLevel());
                     }
 
                     VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(bunnyTex));
