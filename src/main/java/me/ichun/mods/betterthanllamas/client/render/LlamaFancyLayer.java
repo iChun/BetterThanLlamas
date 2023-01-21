@@ -2,7 +2,7 @@ package me.ichun.mods.betterthanllamas.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import me.ichun.mods.betterthanllamas.client.model.LlamaFancyModel;
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
 import net.minecraft.client.model.LlamaModel;
@@ -60,13 +60,13 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        isEasterEggDay = calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1 ||
-                calendar.get(Calendar.MONTH) == Calendar.DECEMBER && calendar.get(Calendar.DAY_OF_MONTH) == 9;
+        //doing the headless llama on national llama day is just kinda cruel. Have it explicitly for other Easter egg days.
+        isEasterEggDay = calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1;
         if(isEasterEggDay)
         {
             modelRabbit = new RabbitModel(RabbitModel.createBodyLayer().bakeRoot());
             modelRabbit.young = false;
-            processLlamaModelForEE(renderer.model);
+            processLlamaModelForEE(renderer.getModel());
         }
     }
 
@@ -157,8 +157,8 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                     }
 
                     matrixStackIn.translate(0F, 7.0F / 16F, -6.0F / 16F);
-                    matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(netHeadYaw));
-                    matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(interpolateValues(llama.xRotO, llama.getXRot(), renderTick)));
+                    matrixStackIn.mulPose(Axis.YP.rotationDegrees(netHeadYaw));
+                    matrixStackIn.mulPose(Axis.XP.rotationDegrees(interpolateValues(llama.xRotO, llama.getXRot(), renderTick)));
                     matrixStackIn.translate(0F, -7.0F / 16F, 6.0F / 16F);
 
                     float scale = 0.0625F;
@@ -261,8 +261,8 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
 
                     matrixStackIn.translate(0F, 7.0F / 16F, -6.0F / 16F);
                     float pitch = interpolateValues(llama.xRotO, llama.getXRot(), renderTick);
-                    matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(netHeadYaw));
-                    matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(pitch));
+                    matrixStackIn.mulPose(Axis.YP.rotationDegrees(netHeadYaw));
+                    matrixStackIn.mulPose(Axis.XP.rotationDegrees(pitch));
                     matrixStackIn.translate(0F, -7.0F / 16F, 6.0F / 16F);
 
                     model.fez3.xRot = -1.2292353921796064F + (float)Math.toRadians(-Mth.clamp(pitch, -90F, 0));
