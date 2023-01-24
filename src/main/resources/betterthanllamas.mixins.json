@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "me.ichun.mods.betterthanllamas.mixin",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "betterthanllamas.refmap.json",
   "mixins": [
   ],
   "client": [
