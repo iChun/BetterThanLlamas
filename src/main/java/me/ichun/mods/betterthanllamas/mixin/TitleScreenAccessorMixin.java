@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(TitleScreen.class)
 public interface TitleScreenAccessorMixin
 {
-    @Accessor("splash")
+    @Accessor
     void setSplash(String newSplash);
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Mixin(LivingEntityRenderer.class)
 public interface LivingEntityRendererAccessorMixin<T extends LivingEntity, M extends EntityModel<T>>
 {
-    @Accessor("layers")
+    @Accessor
     List<RenderLayer<T, M>> getLayers();
 
     @Invoker
