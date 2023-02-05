@@ -60,13 +60,13 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        isEasterEggDay = calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1 ||
-                calendar.get(Calendar.MONTH) == Calendar.DECEMBER && calendar.get(Calendar.DAY_OF_MONTH) == 9;
+        //doing the headless llama on national llama day is just kinda cruel. Have it explicitly for other Easter egg days.
+        isEasterEggDay = calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1;
         if(isEasterEggDay)
         {
             modelRabbit = new RabbitModel(RabbitModel.createBodyLayer().bakeRoot());
             modelRabbit.young = false;
-            processLlamaModelForEE(renderer.model);
+            processLlamaModelForEE(renderer.getModel());
         }
     }
 
