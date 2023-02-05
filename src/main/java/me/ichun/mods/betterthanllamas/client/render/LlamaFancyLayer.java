@@ -60,13 +60,13 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        isEasterEggDay = calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1 ||
-                calendar.get(Calendar.MONTH) == Calendar.DECEMBER && calendar.get(Calendar.DAY_OF_MONTH) == 9;
+        //doing the headless llama on national llama day is just kinda cruel. Have it explicitly for other Easter egg days.
+        isEasterEggDay = calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1;
         if(isEasterEggDay)
         {
             modelRabbit = new RabbitModel(RabbitModel.createBodyLayer().bakeRoot());
             modelRabbit.young = false;
-            processLlamaModelForEE(renderer.model);
+            processLlamaModelForEE(renderer.getModel());
         }
     }
 
@@ -83,14 +83,14 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
     {
         if(!llama.isInvisible())
         {
-            boolean iChunLlama = llama.hasCustomName() && "iChun".equals(llama.getName().getContents());
+            boolean iChunLlama = llama.hasCustomName() && "iChun".equals(llama.getName().getString());
             if(iChunLlama)
             {
                 rand.setSeed(Math.abs("iChun".hashCode() + (llama.getId() * 63268L) * 5642L));
             }
             else
             {
-                rand.setSeed(Math.abs((llama.hasCustomName() ? llama.getName().getContents().hashCode() : llama.getUUID().hashCode()) * 5642L));
+                rand.setSeed(Math.abs((llama.hasCustomName() ? llama.getName().getString().hashCode() : llama.getUUID().hashCode()) * 5642L));
             }
 
             boolean renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache;
@@ -166,7 +166,7 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                     matrixStackIn.translate(0, -26F * scale, -10F * scale);
 
                     ResourceLocation bunnyTex;
-                    if(llama.hasCustomName() && "Toast".equals(llama.getName().getContents()))
+                    if(llama.hasCustomName() && "Toast".equals(llama.getName().getString()))
                     {
                         bunnyTex = TOAST;
                     }
@@ -184,7 +184,7 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                                 };
                     }
 
-                    if (rabbitInstance == null || rabbitInstance.getLevel() != llama.getLevel())
+                    if(rabbitInstance == null || rabbitInstance.getLevel() != llama.getLevel())
                     {
                         rabbitInstance = new Rabbit(EntityType.RABBIT, llama.getLevel());
                     }

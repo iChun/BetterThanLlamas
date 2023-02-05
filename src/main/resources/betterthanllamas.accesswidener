@@ -1,0 +1,4 @@
+accessWidener	v1	named
+#Our only need for access transformers/wideners
+accessible    field    net/minecraft/client/model/LlamaModel    head    Lnet/minecraft/client/model/geom/ModelPart;
+mutable    field    net/minecraft/client/model/LlamaModel    head    Lnet/minecraft/client/model/geom/ModelPart;
