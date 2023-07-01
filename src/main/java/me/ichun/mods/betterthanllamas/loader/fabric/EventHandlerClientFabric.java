@@ -3,7 +3,6 @@ package me.ichun.mods.betterthanllamas.loader.fabric;
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
 import me.ichun.mods.betterthanllamas.common.core.EventHandlerClient;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.renderer.entity.LlamaRenderer;
 import net.minecraft.world.entity.EntityType;
 
@@ -18,11 +17,5 @@ public class EventHandlerClientFabric extends EventHandlerClient
                 addFancyLayer(llamaRenderer);
             }
         });
-    }
-
-    @Override
-    public void addInitScreenHook()
-    {
-        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> onScreenInitPost(screen));
     }
 }

@@ -184,9 +184,9 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                                 };
                     }
 
-                    if(rabbitInstance == null || rabbitInstance.getLevel() != llama.getLevel())
+                    if(rabbitInstance == null || rabbitInstance.level() != llama.level())
                     {
-                        rabbitInstance = new Rabbit(EntityType.RABBIT, llama.getLevel());
+                        rabbitInstance = new Rabbit(EntityType.RABBIT, llama.level());
                     }
 
                     VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(bunnyTex));

@@ -9,7 +9,7 @@
   "client": [
     "LivingEntityRendererAccessorMixin",
     "LlamaDecorLayerAccessorMixin",
-    "TitleScreenAccessorMixin"
+    "SplashManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
