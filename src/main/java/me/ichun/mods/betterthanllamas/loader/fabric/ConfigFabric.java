@@ -55,11 +55,11 @@ public class ConfigFabric extends Config
             return "cat.general.desc";
         }
 
-        @ConfigEntry(nameKey = "prop.applyOn.name", descriptionKey = "prop.applyOn.desc", comment = "Apply Mod On...\n0 = Nothing (why install the mod though?)\n1 = Llamas\n2 = Trader Llamas\n3 = Both", requiresRestart = true)
+        @ConfigEntry(nameKey = "prop.applyOn.name", descriptionKey = "prop.applyOn.desc", comment = Reference.APPLY_ON_COMMENT, requiresRestart = true)
         @ConfigEntry.BoundedInteger(min = 0, max = 3)
         public int applyOn = 3;
 
-        @ConfigEntry(nameKey = "prop.fancyChance.name", descriptionKey = "prop.fancyChance.desc", comment = "Chance of llamas wearing parts of their outfit, in percentage% (0-100)")
+        @ConfigEntry(nameKey = "prop.fancyChance.name", descriptionKey = "prop.fancyChance.desc", comment = Reference.FANCY_CHANCE_COMMENT)
         @ConfigEntry.BoundedInteger(min = 0, max = 100)
         public int fancyChance = 80;
     }
@@ -91,27 +91,27 @@ public class ConfigFabric extends Config
             return "cat.outfit.desc";
         }
 
-        @ConfigEntry(nameKey = "prop.hatChance.name", descriptionKey = "prop.hatChance.desc", comment = "Chance of llamas wearing hats in their outfit, in percentage% (0-100)")
+        @ConfigEntry(nameKey = "prop.hatChance.name", descriptionKey = "prop.hatChance.desc", comment = Reference.HAT_CHANCE_COMMENT)
         @ConfigEntry.BoundedInteger(min = 0, max = 100)
         public int hatChance = 50;
 
-        @ConfigEntry(nameKey = "prop.monocleChance.name", descriptionKey = "prop.monocleChance.desc", comment = "Chance of llamas wearing a monocle in their outfit, in percentage% (0-100)")
+        @ConfigEntry(nameKey = "prop.monocleChance.name", descriptionKey = "prop.monocleChance.desc", comment = Reference.MONOCLE_CHANCE_COMMENT)
         @ConfigEntry.BoundedInteger(min = 0, max = 100)
         public int monocleChance = 50;
 
-        @ConfigEntry(nameKey = "prop.pipeChance.name", descriptionKey = "prop.pipeChance.desc", comment = "Chance of llamas having a pipe in their outfit, in percentage% (0-100)")
+        @ConfigEntry(nameKey = "prop.pipeChance.name", descriptionKey = "prop.pipeChance.desc", comment = Reference.PIPE_CHANCE_COMMENT)
         @ConfigEntry.BoundedInteger(min = 0, max = 100)
         public int pipeChance = 50;
 
-        @ConfigEntry(nameKey = "prop.bowtieChance.name", descriptionKey = "prop.bowtieChance.desc", comment = "Chance of llamas wearing a bow tie in their outfit, in percentage% (0-100)")
+        @ConfigEntry(nameKey = "prop.bowtieChance.name", descriptionKey = "prop.bowtieChance.desc", comment = Reference.BOWTIE_CHANCE_COMMENT)
         @ConfigEntry.BoundedInteger(min = 0, max = 100)
         public int bowtieChance = 50;
 
-        @ConfigEntry(nameKey = "prop.fezChance.name", descriptionKey = "prop.fezChance.desc", comment = "Chance of llamas wearing a fez in their outfit, in percentage% (0-100)")
+        @ConfigEntry(nameKey = "prop.fezChance.name", descriptionKey = "prop.fezChance.desc", comment = Reference.FEZ_CHANCE_COMMENT)
         @ConfigEntry.BoundedInteger(min = 0, max = 100)
         public int fezChance = 50;
 
-        @ConfigEntry(nameKey = "prop.moustacheChance.name", descriptionKey = "prop.moustacheChance.desc", comment = "Chance of llamas wearing a moustache in their outfit, in percentage% (0-100)")
+        @ConfigEntry(nameKey = "prop.moustacheChance.name", descriptionKey = "prop.moustacheChance.desc", comment = Reference.MOUSTACHE_CHANCE_COMMENT)
         @ConfigEntry.BoundedInteger(min = 0, max = 100)
         public int moustacheChance = 50;
     }
