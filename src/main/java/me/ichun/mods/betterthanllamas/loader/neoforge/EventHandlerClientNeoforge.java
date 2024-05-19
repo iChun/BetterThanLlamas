@@ -10,16 +10,16 @@ import net.minecraft.world.entity.animal.horse.Llama;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-public class EventHandlerClientNeoforge extends EventHandlerClient
+public class EventHandlerClientNeoForge extends EventHandlerClient
 {
-    public EventHandlerClientNeoforge(IEventBus modEventBus)
+    public EventHandlerClientNeoForge(IEventBus modEventBus)
     {
         modEventBus.addListener(this::onAddLayers);
     }
 
     private void onAddLayers(EntityRenderersEvent.AddLayers event)
     {
-        int i = BetterThanLlamas.config.applyOn.get();
+        int i = BetterThanLlamas.config.applyOn;
         if((i & 1) > 0)
         {
             LivingEntityRenderer<Llama, ? extends EntityModel<Llama>> render = event.getRenderer(EntityType.LLAMA);

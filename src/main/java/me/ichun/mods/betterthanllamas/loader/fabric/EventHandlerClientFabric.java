@@ -12,7 +12,7 @@ public class EventHandlerClientFabric extends EventHandlerClient
     {
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) ->
         {
-            if(((entityType == EntityType.LLAMA && (BetterThanLlamas.config.applyOn.get() & 1) > 0) || (entityType == EntityType.TRADER_LLAMA && (BetterThanLlamas.config.applyOn.get() & 2) > 0)) && entityRenderer instanceof LlamaRenderer llamaRenderer)
+            if(((entityType == EntityType.LLAMA && (BetterThanLlamas.config.applyOn & 1) > 0) || (entityType == EntityType.TRADER_LLAMA && (BetterThanLlamas.config.applyOn & 2) > 0)) && entityRenderer instanceof LlamaRenderer llamaRenderer)
             {
                 addFancyLayer(llamaRenderer);
             }

@@ -105,12 +105,12 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
             }
             else
             {
-                renderHat = rand.nextFloat() < BetterThanLlamas.config.hatChance.get() / 100F;
-                renderMonocle = rand.nextFloat() < BetterThanLlamas.config.monocleChance.get() / 100F;
-                renderPipe = rand.nextFloat() < BetterThanLlamas.config.pipeChance.get() / 100F;
-                renderBowtie = rand.nextFloat() < BetterThanLlamas.config.bowtieChance.get() / 100F;
-                renderFez = rand.nextFloat() < BetterThanLlamas.config.fezChance.get() / 100F;
-                renderMoustache = rand.nextFloat() < BetterThanLlamas.config.moustacheChance.get() / 100F;
+                renderHat = rand.nextFloat() < BetterThanLlamas.config.hatChance / 100F;
+                renderMonocle = rand.nextFloat() < BetterThanLlamas.config.monocleChance / 100F;
+                renderPipe = rand.nextFloat() < BetterThanLlamas.config.pipeChance / 100F;
+                renderBowtie = rand.nextFloat() < BetterThanLlamas.config.bowtieChance / 100F;
+                renderFez = rand.nextFloat() < BetterThanLlamas.config.fezChance / 100F;
+                renderMoustache = rand.nextFloat() < BetterThanLlamas.config.moustacheChance / 100F;
             }
 
             if(renderHat && renderFez)
@@ -224,7 +224,7 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                     matrixStackIn.popPose();
                 }
             }
-            else if(rand.nextFloat() < (BetterThanLlamas.config.fancyChance.get() / 100F))
+            else if(rand.nextFloat() < (BetterThanLlamas.config.fancyChance / 100F))
             {
                 if(renderHat || renderMonocle || renderPipe || renderBowtie || renderFez || renderMoustache)
                 {

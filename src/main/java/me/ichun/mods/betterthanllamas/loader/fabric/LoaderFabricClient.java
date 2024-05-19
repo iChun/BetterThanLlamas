@@ -1,7 +1,8 @@
 package me.ichun.mods.betterthanllamas.loader.fabric;
 
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
-import me.lortseam.completeconfig.data.Config;
+import me.ichun.mods.betterthanllamas.common.core.Config;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.fabricmc.api.ClientModInitializer;
 
 public class LoaderFabricClient extends BetterThanLlamas
@@ -13,11 +14,7 @@ public class LoaderFabricClient extends BetterThanLlamas
         modProxy = this;
 
         //register config
-        ConfigFabric configFabric = new ConfigFabric();
-        config = configFabric;
-        configFabric.configInstance = new Config(MOD_ID, new String[]{}, configFabric);
-        configFabric.configInstance.load();
-        Runtime.getRuntime().addShutdownHook(new Thread(configFabric.configInstance::save));
+        config = iChunUtil.d().registerConfig(new Config());
 
         //Register event handler
         new EventHandlerClientFabric();

@@ -1,8 +1,8 @@
 package me.ichun.mods.betterthanllamas.common.core;
 
 import me.ichun.mods.betterthanllamas.client.render.LlamaFancyLayer;
-import me.ichun.mods.betterthanllamas.mixin.LivingEntityRendererAccessorMixin;
 import me.ichun.mods.betterthanllamas.mixin.LlamaDecorLayerAccessorMixin;
+import me.ichun.mods.ichunutil.mixin.client.LivingEntityRendererAccessorMixin;
 import net.minecraft.client.model.LlamaModel;
 import net.minecraft.client.renderer.entity.LlamaRenderer;
 import net.minecraft.client.renderer.entity.layers.LlamaDecorLayer;

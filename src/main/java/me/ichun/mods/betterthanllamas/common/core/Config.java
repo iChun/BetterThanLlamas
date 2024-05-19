@@ -1,67 +1,60 @@
 package me.ichun.mods.betterthanllamas.common.core;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
+import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
+import me.ichun.mods.ichunutil.common.config.annotations.Prop;
+import org.jetbrains.annotations.NotNull;
 
-public class Config
+public class Config extends ConfigBase
 {
-    public ConfigWrapper<Integer> applyOn;
+    @Prop(min = 0, max = 3)
+    public int applyOn = 3;
 
-    public ConfigWrapper<Integer> fancyChance;
+    @Prop(min = 0, max = 100)
+    public int fancyChance = 80;
 
-    public ConfigWrapper<Integer> hatChance;
-    public ConfigWrapper<Integer> monocleChance;
-    public ConfigWrapper<Integer> pipeChance;
-    public ConfigWrapper<Integer> bowtieChance;
-    public ConfigWrapper<Integer> fezChance;
-    public ConfigWrapper<Integer> moustacheChance;
+    @CategoryDivider(name = "outfit")
+    @Prop(min = 0, max = 100)
+    public int hatChance = 50;
 
-    protected static class Reference
+    @Prop(min = 0, max = 100)
+    public int monocleChance = 50;
+
+    @Prop(min = 0, max = 100)
+    public int pipeChance = 50;
+
+    @Prop(min = 0, max = 100)
+    public int bowtieChance = 50;
+
+    @Prop(min = 0, max = 100)
+    public int fezChance = 50;
+
+    @Prop(min = 0, max = 100)
+    public int moustacheChance = 50;
+
+    public Config()
     {
-        public static final String APPLY_ON_COMMENT = "Apply Mod On...\n0 = Nothing (why install the mod though?)\n1 = Llamas\n2 = Trader Llamas\n3 = Both";
-        public static final String FANCY_CHANCE_COMMENT = "Chance of llamas wearing parts of their outfit, in percentage% (0-100)";
-        public static final String HAT_CHANCE_COMMENT = "Chance of llamas wearing hats in their outfit, in percentage% (0-100)";
-        public static final String MONOCLE_CHANCE_COMMENT = "Chance of llamas wearing a monocle in their outfit, in percentage% (0-100)";
-        public static final String PIPE_CHANCE_COMMENT = "Chance of llamas having a pipe in their outfit, in percentage% (0-100)";
-        public static final String BOWTIE_CHANCE_COMMENT = "Chance of llamas wearing a bow tie in their outfit, in percentage% (0-100)";
-        public static final String FEZ_CHANCE_COMMENT = "Chance of llamas wearing a fez in their outfit, in percentage% (0-100)";
-        public static final String MOUSTACHE_CHANCE_COMMENT = "Chance of llamas wearing a moustache in their outfit, in percentage% (0-100)";
+        super(BetterThanLlamas.MOD_ID + ".toml");
     }
 
-    public static class ConfigWrapper<T>
+    @NotNull
+    @Override
+    public String getModId()
     {
-        public final Supplier<T> getter;
-        public final Consumer<T> setter;
-        public final Runnable saver;
+        return BetterThanLlamas.MOD_ID;
+    }
 
-        public ConfigWrapper(Supplier<T> getter, Consumer<T> setter) {
-            this.getter = getter;
-            this.setter = setter;
-            this.saver = null;
-        }
+    @NotNull
+    @Override
+    public String getConfigName()
+    {
+        return BetterThanLlamas.MOD_NAME;
+    }
 
-        public ConfigWrapper(Supplier<T> getter, Consumer<T> setter, Runnable saver) {
-            this.getter = getter;
-            this.setter = setter;
-            this.saver = saver;
-        }
-
-        public T get()
-        {
-            return getter.get();
-        }
-
-        public void set(T obj)
-        {
-            setter.accept(obj);
-        }
-
-        public void save()
-        {
-            if(saver != null)
-            {
-                saver.run();
-            }
-        }
+    @Override
+    public Type getConfigType()
+    {
+        return Type.CLIENT;
     }
 }

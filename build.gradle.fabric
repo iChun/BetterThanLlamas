@@ -52,7 +52,7 @@ dependencies {
 
 //If there's mixins
 loom {
-    accessWidenerPath = file("src/main/resources/${project.mod_id}.accesswidener")
+    //accessWidenerPath = file("src/main/resources/${project.mod_id}.accesswidener")
 	mixin {
 		defaultRefmapName = "${project.mod_id}.refmap.json"
 	}

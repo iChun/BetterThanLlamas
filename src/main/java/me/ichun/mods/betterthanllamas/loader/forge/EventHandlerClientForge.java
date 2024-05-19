@@ -19,7 +19,7 @@ public class EventHandlerClientForge extends EventHandlerClient
 
     private void onAddLayers(EntityRenderersEvent.AddLayers event)
     {
-        int i = BetterThanLlamas.config.applyOn.get();
+        int i = BetterThanLlamas.config.applyOn;
         if((i & 1) > 0)
         {
             LivingEntityRenderer<Llama, ? extends EntityModel<Llama>> render = event.getEntityRenderer(EntityType.LLAMA);

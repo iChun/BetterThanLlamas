@@ -1,13 +1,13 @@
 package me.ichun.mods.betterthanllamas.loader.forge;
 
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
+import me.ichun.mods.betterthanllamas.common.core.Config;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 
 
 @Mod(BetterThanLlamas.MOD_ID)
@@ -30,10 +30,7 @@ public class LoaderForge extends BetterThanLlamas
 
     private void setupConfig()
     {
-        //build the config
-        ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
-        config = new ConfigForge(configBuilder);
-        //register the config. This loads the config for us
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, configBuilder.build(), MOD_ID + ".toml");
+        //register config
+        config = iChunUtil.d().registerConfig(new Config());
     }
 }
