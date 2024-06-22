@@ -8,8 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class Config extends ConfigBase
 {
-    @Prop(min = 0, max = 3)
-    public int applyOn = 3;
+    public ApplyOn applyOn = ApplyOn.ALL;
 
     @Prop(min = 0, max = 100)
     public int fancyChance = 80;
@@ -56,5 +55,11 @@ public class Config extends ConfigBase
     public Type getConfigType()
     {
         return Type.CLIENT;
+    }
+
+    public enum ApplyOn {
+        LLAMA,
+        TRADER_LLAMA,
+        ALL
     }
 }

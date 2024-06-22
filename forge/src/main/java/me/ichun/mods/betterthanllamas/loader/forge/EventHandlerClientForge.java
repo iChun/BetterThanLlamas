@@ -1,6 +1,7 @@
 package me.ichun.mods.betterthanllamas.loader.forge;
 
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
+import me.ichun.mods.betterthanllamas.common.core.Config;
 import me.ichun.mods.betterthanllamas.common.core.EventHandlerClient;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -19,8 +20,7 @@ public class EventHandlerClientForge extends EventHandlerClient
 
     private void onAddLayers(EntityRenderersEvent.AddLayers event)
     {
-        int i = BetterThanLlamas.config.applyOn;
-        if((i & 1) > 0)
+        if(BetterThanLlamas.config.applyOn == Config.ApplyOn.LLAMA || BetterThanLlamas.config.applyOn == Config.ApplyOn.ALL)
         {
             LivingEntityRenderer<Llama, ? extends EntityModel<Llama>> render = event.getEntityRenderer(EntityType.LLAMA);
             if(render instanceof LlamaRenderer llamaRenderer)
@@ -28,7 +28,7 @@ public class EventHandlerClientForge extends EventHandlerClient
                 addFancyLayer(llamaRenderer);
             }
         }
-        if((i & 2) > 0)
+        if(BetterThanLlamas.config.applyOn == Config.ApplyOn.TRADER_LLAMA || BetterThanLlamas.config.applyOn == Config.ApplyOn.ALL)
         {
             LivingEntityRenderer<Llama, ? extends EntityModel<Llama>> render = event.getEntityRenderer(EntityType.TRADER_LLAMA);
             if(render instanceof LlamaRenderer llamaRenderer)

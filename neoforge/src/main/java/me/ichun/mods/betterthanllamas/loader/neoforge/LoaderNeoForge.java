@@ -30,14 +30,9 @@ public class LoaderNeoForge extends BetterThanLlamas
     @OnlyIn(Dist.CLIENT)
     private void initClient(IEventBus modEventBus)
     {
-        setupConfig(modEventBus);
-        new EventHandlerClientNeoForge(modEventBus);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void setupConfig(IEventBus modEventBus)
-    {
         //register config
         config = iChunUtil.d().registerConfig(new Config(), modEventBus);
+
+        new EventHandlerClientNeoForge(modEventBus);
     }
 }

@@ -4,6 +4,7 @@ import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
 import me.ichun.mods.betterthanllamas.common.core.Config;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -28,6 +29,7 @@ public class LoaderForge extends BetterThanLlamas
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, IExtensionPoint.DisplayTest.IGNORE_ALL_VERSION);
     }
 
+    @OnlyIn(Dist.CLIENT)
     private void setupConfig()
     {
         //register config

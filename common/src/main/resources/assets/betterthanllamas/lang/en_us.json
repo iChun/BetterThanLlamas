@@ -4,7 +4,7 @@
   "config.betterthanllamas.cat.outfit.name": "Outfit Configs",
   "config.betterthanllamas.cat.outfit.desc": "Configs regarding llamas that are wearing outfits.",
   "config.betterthanllamas.prop.applyOn.name": "Apply Mod On",
-  "config.betterthanllamas.prop.applyOn.desc": "Apply Mod On...\n0 = Nothing (why install the mod though?)\n1 = Llamas\n2 = Trader Llamas\n3 = Both",
+  "config.betterthanllamas.prop.applyOn.desc": "Apply mod on what kind of llamas?",
   "config.betterthanllamas.prop.fancyChance.name": "Fancy Llama Chance",
   "config.betterthanllamas.prop.fancyChance.desc": "Chance of llamas wearing parts of their outfit, in percentage% (0-100)",
   "config.betterthanllamas.prop.hatChance.name": "Hat Chance",
