@@ -2,9 +2,11 @@ package me.ichun.mods.betterthanllamas.loader.forge;
 
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
 import me.ichun.mods.betterthanllamas.common.core.Config;
+import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -18,10 +20,7 @@ public class LoaderForge extends BetterThanLlamas
     {
         modProxy = this;
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            setupConfig();
-            new EventHandlerClientForge();
-        });
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> this::initClient);
 
         DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.error("You are loading " + MOD_NAME + " on a server. " + MOD_NAME + " is a client only mod!"));
 
@@ -30,9 +29,13 @@ public class LoaderForge extends BetterThanLlamas
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void setupConfig()
+    private void initClient()
     {
         //register config
         config = iChunUtil.d().registerConfig(new Config());
+
+        new EventHandlerClientForge();
+
+        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory(WorkspaceConfigs::new));
     }
 }
