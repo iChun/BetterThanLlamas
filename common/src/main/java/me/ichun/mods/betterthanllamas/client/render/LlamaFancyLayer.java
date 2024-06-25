@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.LlamaRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Rabbit;
@@ -34,21 +35,21 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
     private Random rand;
     private LlamaFancyModel model;
 
-    private static final ResourceLocation texFancy = new ResourceLocation("betterthanllamas","textures/model/fancy.png");
-    private static final ResourceLocation texFancyColorizer = new ResourceLocation("betterthanllamas","textures/model/fancycolorizer.png");
+    private static final ResourceLocation texFancy = ResourceLocation.fromNamespaceAndPath("betterthanllamas","textures/model/fancy.png");
+    private static final ResourceLocation texFancyColorizer = ResourceLocation.fromNamespaceAndPath("betterthanllamas","textures/model/fancycolorizer.png");
 
     //Easter egg
     public final boolean isEasterEggDay;
     private RabbitModel modelRabbit;
     private Rabbit rabbitInstance;
-    private static final ResourceLocation BROWN = new ResourceLocation("textures/entity/rabbit/brown.png");
-    private static final ResourceLocation WHITE = new ResourceLocation("textures/entity/rabbit/white.png");
-    private static final ResourceLocation BLACK = new ResourceLocation("textures/entity/rabbit/black.png");
-    private static final ResourceLocation GOLD = new ResourceLocation("textures/entity/rabbit/gold.png");
-    private static final ResourceLocation SALT = new ResourceLocation("textures/entity/rabbit/salt.png");
-    private static final ResourceLocation WHITE_SPLOTCHED = new ResourceLocation("textures/entity/rabbit/white_splotched.png");
-    private static final ResourceLocation TOAST = new ResourceLocation("textures/entity/rabbit/toast.png");
-    private static final ResourceLocation CAERBANNOG = new ResourceLocation("textures/entity/rabbit/caerbannog.png");
+    private static final ResourceLocation BROWN = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/brown.png");
+    private static final ResourceLocation WHITE = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/white.png");
+    private static final ResourceLocation BLACK = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/black.png");
+    private static final ResourceLocation GOLD = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/gold.png");
+    private static final ResourceLocation SALT = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/salt.png");
+    private static final ResourceLocation WHITE_SPLOTCHED = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/white_splotched.png");
+    private static final ResourceLocation TOAST = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/toast.png");
+    private static final ResourceLocation CAERBANNOG = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/caerbannog.png");
 
     public LlamaFancyLayer(LlamaRenderer renderer)
     {
@@ -123,7 +124,7 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
             {
                 if(renderHat || renderMonocle || renderPipe || renderBowtie)
                 {
-                    float[] clr = new float[3];
+                    int clr;
                     if (iChunLlama)
                     {
                         int i = llama.tickCount / 25 + llama.getId();
@@ -131,20 +132,18 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                         int k = i % j;
                         int l = (i + 1) % j;
                         float f = ((float)(llama.tickCount % 25) + renderTick) / 25.0F;
-                        float[] afloat1 = Sheep.getColorArray(DyeColor.byId(k));
-                        float[] afloat2 = Sheep.getColorArray(DyeColor.byId(l));
-                        clr[0] = afloat1[0] * (1.0F - f) + afloat2[0] * f;
-                        clr[1] = afloat1[1] * (1.0F - f) + afloat2[1] * f;
-                        clr[2] = afloat1[2] * (1.0F - f) + afloat2[2] * f;
+                        int clr1 = Sheep.getColor(DyeColor.byId(k));
+                        int clr2 = Sheep.getColor(DyeColor.byId(l));
+                        clr = FastColor.ARGB32.lerp(f, clr1, clr2);
                     }
                     else if (llama.getSwag() != null)
                     {
-                        clr = Sheep.getColorArray(llama.getSwag());
+                        clr = Sheep.getColor(llama.getSwag());
                     }
                     else
                     {
                         rand.setSeed(Math.abs(llama.getId() * 1234L));
-                        clr = Sheep.getColorArray(DyeColor.byId(rand.nextInt(16)));
+                        clr = Sheep.getColor(DyeColor.byId(rand.nextInt(16)));
                     }
 
                     //push for body renderBody
@@ -193,7 +192,7 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                     int packedOverlay = LivingEntityRenderer.getOverlayCoords(llama, 0.0F);
 
                     modelRabbit.setupAnim(rabbitInstance, limbSwing, limbSwingAmount, ageInTicks, 0F, 0F);
-                    modelRabbit.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+                    modelRabbit.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 0xffffffff);
 
                     matrixStackIn.scale(0.6F, 0.6F, 0.6F);
                     matrixStackIn.translate(0.0F, 16.0F * scale, 0.0F);
@@ -203,12 +202,12 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                         matrixStackIn.pushPose();
 
                         ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancy));
-                        model.renderHeadParts(renderHat, renderMonocle, renderPipe, false, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+                        model.renderHeadParts(renderHat, renderMonocle, renderPipe, false, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 0xffffffff);
 
                         if(renderHat)
                         {
                             ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancyColorizer));
-                            model.renderHeadParts(renderHat, renderMonocle, renderPipe, true, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, clr[0], clr[1], clr[2], 1.0F);
+                            model.renderHeadParts(renderHat, renderMonocle, renderPipe, true, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, clr);
                         }
                         matrixStackIn.popPose();
                     }
@@ -216,10 +215,10 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                     if(renderBowtie)
                     {
                         ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancy));
-                        model.renderBody(rabbitInstance, false, ageInTicks, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+                        model.renderBody(rabbitInstance, false, ageInTicks, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 0xffffffff);
 
                         ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancyColorizer));
-                        model.renderBody(rabbitInstance, true, ageInTicks, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, clr[0], clr[1], clr[2], 1.0F);
+                        model.renderBody(rabbitInstance, true, ageInTicks, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, clr);
                     }
                     matrixStackIn.popPose();
                 }
@@ -228,7 +227,7 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
             {
                 if(renderHat || renderMonocle || renderPipe || renderBowtie || renderFez || renderMoustache)
                 {
-                    float[] clr = new float[3];
+                    int clr;
                     if (iChunLlama)
                     {
                         int i = llama.tickCount / 25 + llama.getId();
@@ -236,16 +235,14 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                         int k = i % j;
                         int l = (i + 1) % j;
                         float f = ((float)(llama.tickCount % 25) + renderTick) / 25.0F;
-                        float[] afloat1 = Sheep.getColorArray(DyeColor.byId(k));
-                        float[] afloat2 = Sheep.getColorArray(DyeColor.byId(l));
-                        clr[0] = afloat1[0] * (1.0F - f) + afloat2[0] * f;
-                        clr[1] = afloat1[1] * (1.0F - f) + afloat2[1] * f;
-                        clr[2] = afloat1[2] * (1.0F - f) + afloat2[2] * f;
+                        int clr1 = Sheep.getColor(DyeColor.byId(k));
+                        int clr2 = Sheep.getColor(DyeColor.byId(l));
+                        clr = FastColor.ARGB32.lerp(f, clr1, clr2);
                     }
                     else
                     {
                         rand.setSeed(Math.abs(llama.getId() * 1234L));
-                        clr = Sheep.getColorArray(DyeColor.byId(rand.nextInt(16)));
+                        clr = Sheep.getColor(DyeColor.byId(rand.nextInt(16)));
                     }
 
                     VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancy));
@@ -266,12 +263,12 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                     matrixStackIn.translate(0F, -7.0F / 16F, 6.0F / 16F);
 
                     model.fez3.xRot = -1.2292353921796064F + (float)Math.toRadians(-Mth.clamp(pitch, -90F, 0));
-                    model.renderLlama(false, renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+                    model.renderLlama(false, renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 0xffffffff);
 
                     if(renderHat || renderBowtie)
                     {
                         ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancyColorizer));
-                        model.renderLlama(true, renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, clr[0], clr[1], clr[2], 1.0F);
+                        model.renderLlama(true, renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, clr);
                     }
                     matrixStackIn.popPose();
                 }
