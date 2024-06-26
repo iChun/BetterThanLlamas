@@ -1,7 +1,6 @@
 package me.ichun.mods.betterthanllamas.mixin;
 
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
-import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.client.resources.language.I18n;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class SplashManagerMixin
 {
     @Inject(method = "getSplash", at = @At("HEAD"), cancellable = true)
-    private void btl$getSplash(CallbackInfoReturnable<SplashRenderer> cir)
+    private void btl$getSplash(CallbackInfoReturnable<String> cir)
     {
         if(BetterThanLlamas.isNationalLlamaDay())
         {
@@ -22,7 +21,7 @@ public abstract class SplashManagerMixin
             {
                 splash = "Happy Llama Day!";
             }
-            cir.setReturnValue(new SplashRenderer(splash));
+            cir.setReturnValue(splash);
         }
     }
 }
