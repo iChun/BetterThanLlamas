@@ -3,9 +3,11 @@ package me.ichun.mods.betterthanllamas.loader.neoforge;
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
 import me.ichun.mods.betterthanllamas.common.core.Config;
 import me.ichun.mods.betterthanllamas.common.core.EventHandlerClient;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.LlamaRenderer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.horse.Llama;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
@@ -18,15 +20,21 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
 
     private void onAddLayers(EntityRenderersEvent.AddLayers event)
     {
-        event.getEntityTypes().forEach(type -> {
-            EntityRenderer<?> renderer = event.getRenderer(type);
-            if(renderer instanceof LlamaRenderer llamaRenderer)
+        if(BetterThanLlamas.config.applyOn == Config.ApplyOn.LLAMA || BetterThanLlamas.config.applyOn == Config.ApplyOn.ALL)
+        {
+            LivingEntityRenderer<Llama, ? extends EntityModel<Llama>> render = event.getRenderer(EntityType.LLAMA);
+            if(render instanceof LlamaRenderer llamaRenderer)
             {
-                if(BetterThanLlamas.config.applyOn == Config.ApplyOn.ALL || (type == EntityType.LLAMA && BetterThanLlamas.config.applyOn == Config.ApplyOn.LLAMA) || (type == EntityType.TRADER_LLAMA && BetterThanLlamas.config.applyOn == Config.ApplyOn.TRADER_LLAMA))
-                {
-                    addFancyLayer(llamaRenderer);
-                }
+                addFancyLayer(llamaRenderer);
             }
-        });
+        }
+        if(BetterThanLlamas.config.applyOn == Config.ApplyOn.TRADER_LLAMA || BetterThanLlamas.config.applyOn == Config.ApplyOn.ALL)
+        {
+            LivingEntityRenderer<Llama, ? extends EntityModel<Llama>> render = event.getRenderer(EntityType.TRADER_LLAMA);
+            if(render instanceof LlamaRenderer llamaRenderer)
+            {
+                addFancyLayer(llamaRenderer);
+            }
+        }
     }
 }
