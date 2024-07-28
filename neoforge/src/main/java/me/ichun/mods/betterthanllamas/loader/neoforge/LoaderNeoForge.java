@@ -13,7 +13,7 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 
-@Mod(BetterThanLlamas.MOD_ID)
+@Mod(value = BetterThanLlamas.MOD_ID, dist = Dist.CLIENT)
 public class LoaderNeoForge extends BetterThanLlamas
 {
     public LoaderNeoForge(IEventBus modEventBus)
