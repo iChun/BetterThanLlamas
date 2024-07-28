@@ -38,6 +38,6 @@ public class LoaderNeoForge extends BetterThanLlamas
 
         new EventHandlerClientNeoForge(modEventBus);
 
-        ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () -> (minecraft, screen) -> new WorkspaceConfigs(screen));
+        ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () -> (modContainer, screen) -> new WorkspaceConfigs(screen));
     }
 }
