@@ -96,12 +96,20 @@ public class LlamaFancyLayer extends RenderLayer<LlamaRenderState, LlamaModel>
                     {
                         poseStack.scale(0.71428573F, 0.64935064F, 0.7936508F);
                         poseStack.translate(0.0D, 1.3125D, (double)0.22F);
-                    }
 
-                    poseStack.translate(0F, 7.0F / 16F, -6.0F / 16F);
-                    poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot));
-                    poseStack.mulPose(Axis.XP.rotationDegrees(renderState.xRot));
-                    poseStack.translate(0F, -7.0F / 16F, 6.0F / 16F);
+                        //TODO the model desperately needs updating to match the actual Llama model and its rotation points once Tabula is available so this hack isn't needed
+                        poseStack.translate(0F, 7.0F * 0.64935064F / 16F, -6.0F / 16F);
+                        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(renderState.xRot));
+                        poseStack.translate(0F, -7.0F * 0.64935064F / 16F, 6.0F / 16F);
+                    }
+                    else
+                    {
+                        poseStack.translate(0F, 7.0F / 16F, -6.0F / 16F);
+                        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(renderState.xRot));
+                        poseStack.translate(0F, -7.0F / 16F, 6.0F / 16F);
+                    }
 
                     model.fez3.xRot = -1.2292353921796064F + (float)Math.toRadians(-Mth.clamp(renderState.xRot, -90F, 0));
                     model.renderLlama(false, renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache, poseStack, ivertexbuilder, packedLight, packedOverlay, 0xffffffff);
