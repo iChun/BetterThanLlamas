@@ -2,6 +2,7 @@ package me.ichun.mods.betterthanllamas.common;
 
 import com.mojang.logging.LogUtils;
 import me.ichun.mods.betterthanllamas.common.core.Config;
+import me.ichun.mods.betterthanllamas.common.core.EventHandlerClient;
 import org.slf4j.Logger;
 
 import java.util.Calendar;
@@ -16,6 +17,8 @@ public abstract class BetterThanLlamas
     public static BetterThanLlamas modProxy;
 
     public static Config config;
+
+    public static EventHandlerClient eventHandlerClient;
 
     private static Boolean isNationalLlamaDay; //I know, I know, a dirty triple state boolean
 

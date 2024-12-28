@@ -19,7 +19,7 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
     private void onAddLayers(EntityRenderersEvent.AddLayers event)
     {
         event.getEntityTypes().forEach(type -> {
-            EntityRenderer<?> renderer = event.getRenderer(type);
+            EntityRenderer<?, ?> renderer = event.getRenderer(type);
             if(renderer instanceof LlamaRenderer llamaRenderer)
             {
                 if(BetterThanLlamas.config.applyOn == Config.ApplyOn.ALL || (type == EntityType.LLAMA && BetterThanLlamas.config.applyOn == Config.ApplyOn.LLAMA) || (type == EntityType.TRADER_LLAMA && BetterThanLlamas.config.applyOn == Config.ApplyOn.TRADER_LLAMA))

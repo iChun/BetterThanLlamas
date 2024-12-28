@@ -17,6 +17,6 @@ public class LoaderFabricClient extends BetterThanLlamas
         config = iChunUtil.d().registerConfig(new Config());
 
         //Register event handler
-        new EventHandlerClientFabric();
+        eventHandlerClient = new EventHandlerClientFabric();
     }
 }

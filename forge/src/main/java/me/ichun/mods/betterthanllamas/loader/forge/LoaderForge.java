@@ -34,7 +34,7 @@ public class LoaderForge extends BetterThanLlamas
         //register config
         config = iChunUtil.d().registerConfig(new Config());
 
-        new EventHandlerClientForge();
+        eventHandlerClient = new EventHandlerClientForge();
 
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory(WorkspaceConfigs::new));
     }

@@ -6,11 +6,9 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.animal.Rabbit;
-import net.minecraft.world.entity.animal.horse.Llama;
+import net.minecraft.client.renderer.entity.state.LlamaRenderState;
 
-public class LlamaFancyModel<T extends Llama> extends EntityModel<T>
+public class LlamaFancyModel extends EntityModel<LlamaRenderState>
 {
     //hat
     public ModelPart hatRim;
@@ -68,7 +66,7 @@ public class LlamaFancyModel<T extends Llama> extends EntityModel<T>
 
     public LlamaFancyModel()
     {
-        ModelPart root = createModel().bakeRoot();
+        super(createModel().bakeRoot());
 
         hatRim = root.getChild("hat_rim");
         hatTop = root.getChild("hat_top");
@@ -178,89 +176,82 @@ public class LlamaFancyModel<T extends Llama> extends EntityModel<T>
         return LayerDefinition.create(mesh, 64, 64);
     }
 
-    @Override
-    public void setupAnim(T t, float v, float v1, float v2, float v3, float v4)
-    {
-    }
+    //    Mojang has made this method final - can't be edited anymore
+    //    @Override
+    //    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int colour) //this method is never called, normally.
+    //    {
+    //        renderHeadParts(true, true, true, false, poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+    //        renderHeadParts(true, true, true, true, poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+    //    }
 
-    @Override
-    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, int colour) //this method is never called, normally.
-    {
-        renderHeadParts(true, true, true, false, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-        renderHeadParts(true, true, true, true, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-    }
-
-    public void renderHeadParts(boolean renderHat, boolean renderMonocle, boolean renderPipe, boolean isRenderingColour, PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, int colour)
+    public void renderHeadParts(boolean renderHat, boolean renderMonocle, boolean renderPipe, boolean isRenderingColour, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int colour)
     {
         if(!isRenderingColour)
         {
             if(renderHat)
             {
-                hatTop.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                hatRim.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+                hatTop.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                hatRim.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
             }
             if(renderMonocle)
             {
-                monocle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle6.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+                monocle.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle2.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle3.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle4.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle5.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle6.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle7.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle8.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle1.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
 
-                monocleChain1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocleChain2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocleChain3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocleChain4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+                monocleChain1.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocleChain2.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocleChain3.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocleChain4.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
             }
             if(renderPipe)
             {
-                pipe4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                pipe2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                pipe3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                pipe.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+                pipe4.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                pipe2.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                pipe3.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                pipe.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
             }
         }
         else if(renderHat)
         {
-            hatTop.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+            hatTop.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
         }
     }
 
-    public void renderBody(Rabbit rabbit, boolean isRenderingColour, float ageInTicks, PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, int colour)
+    public void renderBody(boolean isRenderingColour, float jumpRotation, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int colour)
     {
         if(!isRenderingColour)
         {
-            float f = ageInTicks - (float)rabbit.tickCount;
-            float jumpRotation = Mth.sin(rabbit.getJumpCompletion(f) * (float)Math.PI);
-
             frontLegRightTux.xRot = (jumpRotation * -40.0F - 11.0F) * 0.017453292F;
             frontLegLeftTux.xRot = (jumpRotation * -40.0F - 11.0F) * 0.017453292F;
             bodyTuxTail1.xRot = (-1.108972F + jumpRotation * 0.8F);
             bodyTuxTail2.xRot = (-1.108972F + jumpRotation * 0.8F);
 
-            frontLegRightTux.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-            frontLegLeftTux.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-            bodyTuxTail1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-            bodyTuxTail2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-            bodyTux.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+            frontLegRightTux.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+            frontLegLeftTux.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+            bodyTuxTail1.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+            bodyTuxTail2.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+            bodyTux.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
         }
         else
         {
-            bowtie5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-            bowtie3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-            bowtie4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-            bowtie1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-            bowtie2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+            bowtie5.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+            bowtie3.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+            bowtie4.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+            bowtie1.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+            bowtie2.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
 
-            bodyTux.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+            bodyTux.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
         }
     }
 
-    public void renderLlama(boolean isRenderingColour, boolean renderHat, boolean renderMonocle, boolean renderPipe, boolean renderBowtie, boolean renderFez, boolean renderMous, PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, int colour)
+    public void renderLlama(boolean isRenderingColour, boolean renderHat, boolean renderMonocle, boolean renderPipe, boolean renderBowtie, boolean renderFez, boolean renderMous, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int colour)
     {
         float scale = 1.35F;
 
@@ -268,75 +259,75 @@ public class LlamaFancyModel<T extends Llama> extends EntityModel<T>
         {
             if(renderHat)
             {
-                matrixStackIn.pushPose();
-                matrixStackIn.translate(0F, -1.55F, -0.25F );
-                matrixStackIn.scale(scale, scale, scale);
-                hatTop.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                hatRim.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                matrixStackIn.popPose();
+                poseStack.pushPose();
+                poseStack.translate(0F, -1.55F, -0.25F );
+                poseStack.scale(scale, scale, scale);
+                hatTop.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                hatRim.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                poseStack.popPose();
             }
             if(renderMonocle)
             {
-                matrixStackIn.pushPose();
-                matrixStackIn.translate(0.041F, -1.55F, -0.22F);
-                matrixStackIn.scale(scale, scale, scale);
-                monocle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle6.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocle1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+                poseStack.pushPose();
+                poseStack.translate(0.041F, -1.55F, -0.22F);
+                poseStack.scale(scale, scale, scale);
+                monocle.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle2.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle3.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle4.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle5.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle6.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle7.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle8.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocle1.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
 
-                monocleChain1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocleChain2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocleChain3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                monocleChain4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                matrixStackIn.popPose();
+                monocleChain1.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocleChain2.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocleChain3.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                monocleChain4.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                poseStack.popPose();
             }
             if(renderPipe)
             {
-                matrixStackIn.pushPose();
-                matrixStackIn.translate(0F, -1.50F, -0.5F);
-                matrixStackIn.scale(scale, scale, scale);
-                pipe4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                pipe2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                pipe3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                pipe.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                matrixStackIn.popPose();
+                poseStack.pushPose();
+                poseStack.translate(0F, -1.50F, -0.5F);
+                poseStack.scale(scale, scale, scale);
+                pipe4.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                pipe2.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                pipe3.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                pipe.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                poseStack.popPose();
             }
             if(renderFez)
             {
-                fez1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+                fez1.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
             }
             if(renderMous)
             {
-                mous1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
+                mous1.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
             }
         }
         else
         {
             if(renderHat)
             {
-                matrixStackIn.pushPose();
-                matrixStackIn.translate(0F, -1.55F, -0.25F);
-                matrixStackIn.scale(scale, scale, scale);
-                hatTop.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                matrixStackIn.popPose();
+                poseStack.pushPose();
+                poseStack.translate(0F, -1.55F, -0.25F);
+                poseStack.scale(scale, scale, scale);
+                hatTop.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                poseStack.popPose();
             }
             if(renderBowtie)
             {
-                matrixStackIn.pushPose();
-                matrixStackIn.translate(0F, -1.5F, -0.525F);
-                matrixStackIn.scale(scale, scale, scale);
-                bowtie5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                bowtie3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                bowtie4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                bowtie1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                bowtie2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, colour);
-                matrixStackIn.popPose();
+                poseStack.pushPose();
+                poseStack.translate(0F, -1.5F, -0.525F);
+                poseStack.scale(scale, scale, scale);
+                bowtie5.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                bowtie3.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                bowtie4.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                bowtie1.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                bowtie2.render(poseStack, vertexConsumer, packedLight, packedOverlay, colour);
+                poseStack.popPose();
             }
         }
     }

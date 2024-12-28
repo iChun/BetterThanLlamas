@@ -6,92 +6,53 @@ import com.mojang.math.Axis;
 import me.ichun.mods.betterthanllamas.client.model.LlamaFancyModel;
 import me.ichun.mods.betterthanllamas.common.BetterThanLlamas;
 import net.minecraft.client.model.LlamaModel;
-import net.minecraft.client.model.RabbitModel;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.LlamaRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.LlamaRenderState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.WoolCarpetBlock;
 
-import java.util.Calendar;
 import java.util.Random;
 
-public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
+public class LlamaFancyLayer extends RenderLayer<LlamaRenderState, LlamaModel>
 {
-    private final LlamaRenderer renderer;
-    private Random rand;
-    private LlamaFancyModel model;
-
     private static final ResourceLocation texFancy = ResourceLocation.fromNamespaceAndPath("betterthanllamas","textures/model/fancy.png");
     private static final ResourceLocation texFancyColorizer = ResourceLocation.fromNamespaceAndPath("betterthanllamas","textures/model/fancycolorizer.png");
 
-    //Easter egg
-    public final boolean isEasterEggDay;
-    private RabbitModel modelRabbit;
-    private Rabbit rabbitInstance;
-    private static final ResourceLocation BROWN = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/brown.png");
-    private static final ResourceLocation WHITE = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/white.png");
-    private static final ResourceLocation BLACK = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/black.png");
-    private static final ResourceLocation GOLD = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/gold.png");
-    private static final ResourceLocation SALT = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/salt.png");
-    private static final ResourceLocation WHITE_SPLOTCHED = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/white_splotched.png");
-    private static final ResourceLocation TOAST = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/toast.png");
-    private static final ResourceLocation CAERBANNOG = ResourceLocation.withDefaultNamespace("textures/entity/rabbit/caerbannog.png");
+    private Random rand = new Random();
+    private LlamaFancyModel model = new LlamaFancyModel();
 
     public LlamaFancyLayer(LlamaRenderer renderer)
     {
         super(renderer);
-        this.renderer = renderer;
-        this.rand = new Random();
-        this.model = new LlamaFancyModel();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-
-        //doing the headless llama on national llama day is just kinda cruel. Have it explicitly for other Easter egg days.
-        isEasterEggDay = calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1;
-        if(isEasterEggDay)
-        {
-            modelRabbit = new RabbitModel(RabbitModel.createBodyLayer().bakeRoot());
-            modelRabbit.young = false;
-            processLlamaModelForEE(renderer.getModel());
-        }
-    }
-
-    public static void processLlamaModelForEE(LlamaModel model)
-    {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(33, 4).addBox(-4.0F, -9.0F, -6.0F, 8, 11, 6), PartPose.offset(0.0F, 7.0F, -6.0F));
-        model.head = LayerDefinition.create(mesh, 128, 64).bakeRoot().getChild("head");
     }
 
     @Override
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, Llama llama, float limbSwing, float limbSwingAmount, float renderTick, float ageInTicks, float netHeadYaw, float headPitch)
+    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, LlamaRenderState renderState, float yRot, float xRot)
     {
-        if(!llama.isInvisible())
+        Llama llama = BetterThanLlamas.eventHandlerClient.llamaRendered.get();
+        if(llama == null) return;
+
+        if(!renderState.isInvisible)
         {
-            boolean iChunLlama = llama.hasCustomName() && "iChun".equals(llama.getName().getString());
+            boolean iChunLlama = renderState.customName != null && "iChun".equals(renderState.customName.getString());
             if(iChunLlama)
             {
                 rand.setSeed(Math.abs("iChun".hashCode() + (llama.getId() * 63268L) * 5642L));
             }
             else
             {
-                rand.setSeed(Math.abs((llama.hasCustomName() ? llama.getName().getString().hashCode() : llama.getUUID().hashCode()) * 5642L));
+                rand.setSeed(Math.abs((renderState.customName != null ? renderState.customName.getString().hashCode() : llama.getUUID().hashCode()) * 5642L));
             }
 
             boolean renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache;
@@ -120,164 +81,66 @@ public class LlamaFancyLayer extends RenderLayer<Llama, LlamaModel<Llama>>
                 renderFez = !renderHat;
             }
 
-            if(isEasterEggDay)
-            {
-                if(renderHat || renderMonocle || renderPipe || renderBowtie)
-                {
-                    int clr;
-                    if (iChunLlama)
-                    {
-                        int i = llama.tickCount / 25 + llama.getId();
-                        int j = DyeColor.values().length;
-                        int k = i % j;
-                        int l = (i + 1) % j;
-                        float f = ((float)(llama.tickCount % 25) + renderTick) / 25.0F;
-                        int clr1 = Sheep.getColor(DyeColor.byId(k));
-                        int clr2 = Sheep.getColor(DyeColor.byId(l));
-                        clr = FastColor.ARGB32.lerp(f, clr1, clr2);
-                    }
-                    else if (llama.getSwag() != null)
-                    {
-                        clr = Sheep.getColor(llama.getSwag());
-                    }
-                    else
-                    {
-                        rand.setSeed(Math.abs(llama.getId() * 1234L));
-                        clr = Sheep.getColor(DyeColor.byId(rand.nextInt(16)));
-                    }
-
-                    //push for body renderBody
-                    matrixStackIn.pushPose();
-
-                    if(llama.isBaby())
-                    {
-                        matrixStackIn.scale(0.71428573F, 0.64935064F, 0.7936508F);
-                        matrixStackIn.translate(0.0D, 1.3125D, (double)0.22F);
-                    }
-
-                    matrixStackIn.translate(0F, 7.0F / 16F, -6.0F / 16F);
-                    matrixStackIn.mulPose(Axis.YP.rotationDegrees(netHeadYaw));
-                    matrixStackIn.mulPose(Axis.XP.rotationDegrees(interpolateValues(llama.xRotO, llama.getXRot(), renderTick)));
-                    matrixStackIn.translate(0F, -7.0F / 16F, 6.0F / 16F);
-
-                    float scale = 0.0625F;
-
-                    matrixStackIn.translate(0, -26F * scale, -10F * scale);
-
-                    ResourceLocation bunnyTex;
-                    if(llama.hasCustomName() && "Toast".equals(llama.getName().getString()))
-                    {
-                        bunnyTex = TOAST;
-                    }
-                    else
-                    {
-                        bunnyTex = switch(rand.nextInt(7))
-                        {
-                            default -> BROWN;
-                            case 1 -> WHITE;
-                            case 2 -> BLACK;
-                            case 3 -> WHITE_SPLOTCHED;
-                            case 4 -> GOLD;
-                            case 5 -> SALT;
-                            case 6 -> CAERBANNOG;
-                        };
-                    }
-
-                    if(rabbitInstance == null || rabbitInstance.level() != llama.level())
-                    {
-                        rabbitInstance = new Rabbit(EntityType.RABBIT, llama.level());
-                    }
-
-                    VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(bunnyTex));
-                    int packedOverlay = LivingEntityRenderer.getOverlayCoords(llama, 0.0F);
-
-                    modelRabbit.setupAnim(rabbitInstance, limbSwing, limbSwingAmount, ageInTicks, 0F, 0F);
-                    modelRabbit.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 0xffffffff);
-
-                    matrixStackIn.scale(0.6F, 0.6F, 0.6F);
-                    matrixStackIn.translate(0.0F, 16.0F * scale, 0.0F);
-
-                    if(renderHat || renderMonocle || renderPipe)
-                    {
-                        matrixStackIn.pushPose();
-
-                        ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancy));
-                        model.renderHeadParts(renderHat, renderMonocle, renderPipe, false, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 0xffffffff);
-
-                        if(renderHat)
-                        {
-                            ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancyColorizer));
-                            model.renderHeadParts(renderHat, renderMonocle, renderPipe, true, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, clr);
-                        }
-                        matrixStackIn.popPose();
-                    }
-
-                    if(renderBowtie)
-                    {
-                        ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancy));
-                        model.renderBody(rabbitInstance, false, ageInTicks, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 0xffffffff);
-
-                        ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancyColorizer));
-                        model.renderBody(rabbitInstance, true, ageInTicks, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, clr);
-                    }
-                    matrixStackIn.popPose();
-                }
-            }
-            else if(rand.nextFloat() < (BetterThanLlamas.config.fancyChance / 100F))
+            if(rand.nextFloat() < (BetterThanLlamas.config.fancyChance / 100F))
             {
                 if(renderHat || renderMonocle || renderPipe || renderBowtie || renderFez || renderMoustache)
                 {
-                    int clr;
-                    if (iChunLlama)
-                    {
-                        int i = llama.tickCount / 25 + llama.getId();
-                        int j = DyeColor.values().length;
-                        int k = i % j;
-                        int l = (i + 1) % j;
-                        float f = ((float)(llama.tickCount % 25) + renderTick) / 25.0F;
-                        int clr1 = Sheep.getColor(DyeColor.byId(k));
-                        int clr2 = Sheep.getColor(DyeColor.byId(l));
-                        clr = FastColor.ARGB32.lerp(f, clr1, clr2);
-                    }
-                    else
-                    {
-                        rand.setSeed(Math.abs(llama.getId() * 1234L));
-                        clr = Sheep.getColor(DyeColor.byId(rand.nextInt(16)));
-                    }
+                    int clr = getLlamaColouriserColour(llama, renderState, iChunLlama);
 
-                    VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancy));
-                    int packedOverlay = LivingEntityRenderer.getOverlayCoords(llama, 0.0F);
+                    VertexConsumer ivertexbuilder = bufferSource.getBuffer(RenderType.entityTranslucent(texFancy));
+                    int packedOverlay = LivingEntityRenderer.getOverlayCoords(renderState, 0.0F);
 
-                    matrixStackIn.pushPose();
+                    poseStack.pushPose();
 
                     if(llama.isBaby())
                     {
-                        matrixStackIn.scale(0.71428573F, 0.64935064F, 0.7936508F);
-                        matrixStackIn.translate(0.0D, 1.3125D, (double)0.22F);
+                        poseStack.scale(0.71428573F, 0.64935064F, 0.7936508F);
+                        poseStack.translate(0.0D, 1.3125D, (double)0.22F);
                     }
 
-                    matrixStackIn.translate(0F, 7.0F / 16F, -6.0F / 16F);
-                    float pitch = interpolateValues(llama.xRotO, llama.getXRot(), renderTick);
-                    matrixStackIn.mulPose(Axis.YP.rotationDegrees(netHeadYaw));
-                    matrixStackIn.mulPose(Axis.XP.rotationDegrees(pitch));
-                    matrixStackIn.translate(0F, -7.0F / 16F, 6.0F / 16F);
+                    poseStack.translate(0F, 7.0F / 16F, -6.0F / 16F);
+                    poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot));
+                    poseStack.mulPose(Axis.XP.rotationDegrees(renderState.xRot));
+                    poseStack.translate(0F, -7.0F / 16F, 6.0F / 16F);
 
-                    model.fez3.xRot = -1.2292353921796064F + (float)Math.toRadians(-Mth.clamp(pitch, -90F, 0));
-                    model.renderLlama(false, renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, 0xffffffff);
+                    model.fez3.xRot = -1.2292353921796064F + (float)Math.toRadians(-Mth.clamp(renderState.xRot, -90F, 0));
+                    model.renderLlama(false, renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache, poseStack, ivertexbuilder, packedLight, packedOverlay, 0xffffffff);
 
                     if(renderHat || renderBowtie)
                     {
-                        ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(texFancyColorizer));
-                        model.renderLlama(true, renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache, matrixStackIn, ivertexbuilder, packedLightIn, packedOverlay, clr);
+                        ivertexbuilder = bufferSource.getBuffer(RenderType.entityTranslucent(texFancyColorizer));
+                        model.renderLlama(true, renderHat, renderMonocle, renderPipe, renderBowtie, renderFez, renderMoustache, poseStack, ivertexbuilder, packedLight, packedOverlay, clr);
                     }
-                    matrixStackIn.popPose();
+                    poseStack.popPose();
                 }
             }
         }
     }
 
-    public static float interpolateValues(float prevVal, float nextVal, float partialTick)
+    private int getLlamaColouriserColour(Llama llama, LlamaRenderState renderState, boolean iChunLlama)
     {
-        return prevVal + partialTick * (nextVal - prevVal);
+        if (iChunLlama)
+        {
+            int i = Mth.floor(renderState.ageInTicks) / 25 + llama.getId();
+            int j = DyeColor.values().length;
+            int k = i % j;
+            int l = (i + 1) % j;
+            float f = ((float)(Mth.floor(renderState.ageInTicks) % 25) + Mth.frac(renderState.ageInTicks)) / 25.0F;
+            int clr1 = Sheep.getColor(DyeColor.byId(k));
+            int clr2 = Sheep.getColor(DyeColor.byId(l));
+            return ARGB.lerp(f, clr1, clr2);
+        }
+        else
+        {
+            ItemStack itemstack = renderState.bodyItem;
+            Block block = Block.byItem(itemstack.getItem());
+            if(block instanceof WoolCarpetBlock woolBlock)
+            {
+                return Sheep.getColor(woolBlock.getColor());
+            }
+
+            rand.setSeed(Math.abs(llama.getId() * 1234L));
+            return Sheep.getColor(DyeColor.byId(rand.nextInt(16)));
+        }
     }
 }
